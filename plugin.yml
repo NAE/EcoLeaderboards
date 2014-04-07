@@ -1,0 +1,26 @@
+name: SignLeaderboards
+main: com.gmail.mrphpfan.SignLeaderboards
+version: 1.0
+depend: [PermissionsEx, Vault, Essentials]
+
+commands:
+  sl:
+    description: Re-rank the sign leaderboards.
+    usage: /sl reload
+permissions:
+  SignLeaderboards.*:
+    default: op
+    description: All SignLeaderboards permissions.
+    children:
+      SignLeaderboards.place: true
+      SignLeaderboards.reload: true
+      SignLeaderboards.position: true
+  SignLeaderboards.place:
+    description: Ability to create a baltop leaderboard with a sign
+    default: false
+  SignLeaderboards.reload:
+    description: Update the current balances on signs
+    default: false
+  SignLeaderboards.position:
+    description: Gets the user and balance at a certain rank (1 - 10)
+    default: false
