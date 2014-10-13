@@ -12,9 +12,8 @@ public class UpdateTask extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		plugin.getServer().getLogger().info("Balances being ranked...");
 		plugin.rankBalances();
-		plugin.getServer().getLogger().info("Ranking complete. Signs updated.");
+		plugin.saveSigns();
 	}
 
 }

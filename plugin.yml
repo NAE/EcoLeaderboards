@@ -1,26 +1,26 @@
-name: SignLeaderboards
-main: com.gmail.mrphpfan.SignLeaderboards
+name: EcoLeaderboards
+main: com.gmail.mrphpfan.EcoLeaderboards
 version: 1.0
 depend: [PermissionsEx, Vault, Essentials]
 
 commands:
-  sl:
+  el:
     description: Re-rank the sign leaderboards.
-    usage: /sl reload
+    usage: /el reload
 permissions:
-  SignLeaderboards.*:
+  EcoLeaderboards.*:
     default: op
-    description: All SignLeaderboards permissions.
+    description: All EcoLeaderboards permissions.
     children:
-      SignLeaderboards.place: true
-      SignLeaderboards.reload: true
-      SignLeaderboards.position: true
-  SignLeaderboards.place:
+      EcoLeaderboards.place: true
+      EcoLeaderboards.reload: true
+      EcoLeaderboards.position: true
+  EcoLeaderboards.place:
     description: Ability to create a baltop leaderboard with a sign
     default: false
-  SignLeaderboards.reload:
+  EcoLeaderboards.reload:
     description: Update the current balances on signs
     default: false
-  SignLeaderboards.position:
+  EcoLeaderboards.position:
     description: Gets the user and balance at a certain rank (1 - 10)
     default: false

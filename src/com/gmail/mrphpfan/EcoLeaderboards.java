@@ -38,7 +38,7 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 	
 	private ArrayList<Leaderboard> allBoards = new ArrayList<Leaderboard>();
 	
-	private int tickUpdateInterval = 10000;
+	private int tickUpdateInterval = 1200;
 	private ArrayList<String> excludedPlayers = new ArrayList<String>();
 	
 	@Override
@@ -58,7 +58,7 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 		rankBalances();
 		
 		//update the signs every so often
-		getServer().getScheduler().runTaskTimerAsynchronously(this, new UpdateTask(this), tickUpdateInterval, tickUpdateInterval);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new UpdateTask(this), tickUpdateInterval, tickUpdateInterval);
 		
 		getLogger().info("EcoLeaderboards Enabled.");
 	}
@@ -90,8 +90,8 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 		this.getConfig().options().copyDefaults(true);
         this.saveConfig();
         
-        if(this.getConfig().get("tick_update_interval") == null){
-	        this.getConfig().addDefault("tick_update_interval", 1000);
+        if(this.getConfig().get("update_interval_seconds") == null){
+	        this.getConfig().addDefault("update_interval_seconds", 60);
 	        this.saveConfig();
         }
         
@@ -107,10 +107,13 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
         	getLogger().warning("Invalid excluded_players config section or not found.");
         }
         
-        tickUpdateInterval = this.getConfig().getInt("tick_update_interval");
-        if(tickUpdateInterval <= 0){
-        	tickUpdateInterval = 10000;
-        	getLogger().warning("Invalid tick_update_interval config section or not found. Defaulting to 10000.");
+        int secondsInterval = this.getConfig().getInt("update_interval_seconds");
+        if(secondsInterval <= 0){
+        	tickUpdateInterval = 60 * 20;
+        	getLogger().warning("Invalid update_interval_seconds config section or not found. Defaulting to 60.");
+        }else{
+        	//convert seconds to server ticks (1 second = 20 ticks)
+        	tickUpdateInterval = secondsInterval * 20;
         }
 	}
 
@@ -142,12 +145,10 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 				e.printStackTrace();
 			}
 			
-		}else{
-			getLogger().info("No EcoLeaderboards sign file found.");
 		}
 	}
 	
-	private void saveSigns(){
+	public void saveSigns(){
 		File signFile = new File("plugins/EcoLeaderboards/signs.txt");
 		try{
 			signFile.createNewFile();
@@ -178,7 +179,7 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 		
 		if(player.hasPermission("EcoLeaderboards.place")){
 			String line0 = event.getLine(0);
-			if(line0.startsWith("[sl")){
+			if(line0.startsWith("[el")){
 				try{
 					int number = Integer.parseInt(line0.substring(3,line0.indexOf("]")));
 					Bal balRank = atPosition(number);
@@ -199,7 +200,7 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 					}
 					allBoards.add(l);
 				}catch(Exception e){
-					player.sendMessage(ChatColor.GOLD + "First line must be [sl#], replace # with a number 1-10");
+					player.sendMessage(ChatColor.GOLD + "First line must be [el#], replace # with a number 1-10");
 				}
 			}
 		}
@@ -207,7 +208,7 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		String cmdName = cmd.getName();
-		if(cmdName.equalsIgnoreCase("sl")){
+		if(cmdName.equalsIgnoreCase("el")){
 			if(args.length == 1){
 				if(args[0].equalsIgnoreCase("reload")){
 					if(sender.hasPermission("EcoLeaderboards.reload")){
@@ -219,7 +220,7 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 					return true;
 				}else if(args[0].equalsIgnoreCase("position")){
 					//they forgot a position
-					sender.sendMessage(ChatColor.GOLD + "Usage: /sl position [number(1-10)].");
+					sender.sendMessage(ChatColor.GOLD + "Usage: /el position [number(1-10)].");
 					return true;
 				}else if(args[0].equalsIgnoreCase("top")){
 					//print all the top balances
@@ -304,8 +305,6 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 			boolean updateSuccess = thisBoard.update(top10[thisBoard.getRank() - 1].getName(), top10[thisBoard.getRank() - 1].getBalance());
 			if(updateSuccess){
 				newBoards.add(thisBoard);
-			}else{
-				getLogger().info("Removing sign at: " + thisBoard.getLocation().toString());
 			}
 		}
 		allBoards = newBoards;
