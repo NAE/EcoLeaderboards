@@ -1,8 +1,8 @@
 package com.gmail.mrphpfan;
 
 public class Bal implements Comparable {
-	private String name;
-	private Double balance;
+	private final String name;
+	private final Double balance;
 
 	public Bal(String name, double balance) {
 		this.name = name;

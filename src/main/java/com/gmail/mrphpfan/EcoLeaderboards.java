@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class EcoLeaderboards extends JavaPlugin implements Listener {
 	private static final Logger log = Bukkit.getLogger();
 	private static Economy econ = null;
-	private Bal[] top10 = new Bal[11];
+	private final Bal[] top10 = new Bal[11];
 
 	private ArrayList<Leaderboard> allBoards = new ArrayList<>();
 
@@ -283,15 +283,15 @@ public class EcoLeaderboards extends JavaPlugin implements Listener {
 			top10[i] = new Bal("", 0.0);
 		}
 
-		playerloop:
+		playerLoop:
 		for(OfflinePlayer player : players) {
 			String name = player.getName();
 
 			//make sure it's not in the excluded players list
 			for(String excludedPlayer : excludedPlayers) {
 				if(name.equalsIgnoreCase(excludedPlayer)) {
-					//dont use this name in the ranking
-					continue playerloop;
+					//don't use this name in the ranking
+					continue playerLoop;
 				}
 			}
 

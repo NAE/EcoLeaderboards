@@ -8,8 +8,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class Leaderboard {
-	private Location loc;
-	private int rank;
+	private final Location loc;
+	private final int rank;
 	private String name;
 	private double balance;
 
